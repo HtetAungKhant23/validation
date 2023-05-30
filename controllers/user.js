@@ -5,8 +5,10 @@ exports.signup = async (req, res, next) => {
     try {
         const error = validationResult(req);
         if(!error.isEmpty()){
-            error.statusCode = 422;
-            throw error;
+            const err = new Error('validation failed!');
+            err.statusCode = 422;
+            err.message = error.array();
+            throw err;
         }
         const email = req.body.email;
         const password = req.body.password;
@@ -30,6 +32,8 @@ exports.signup = async (req, res, next) => {
         })
 
     } catch(err) {
-        res.status(err.statusCode).json(err.array());
+        res.status(err.statusCode).json({
+            message: err.message[0].msg
+        });
     }
 }

@@ -18,7 +18,23 @@ router.post('/signup',
                     }
                 })
         })
-        .normalizeEmail()
+        .normalizeEmail(),
+    body('password')
+        .trim()
+        .isLength({ min: 8 })
+        .withMessage('password is not strong enough!')
+        .not()
+        .isUppercase()
+        .not()
+        .isLowercase()
+        .not()
+        .isAlphanumeric()
+        .custom((value, {req}) => {
+            if(value !== req.body.confirm_password){
+                return Promise.reject('password is not match!');
+            }
+            return true;
+        })
 ]
 , controller.signup);
 
