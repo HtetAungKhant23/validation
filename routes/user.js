@@ -34,7 +34,11 @@ router.post('/signup',
                 return Promise.reject('password is not match!');
             }
             return true;
-        })
+        }),
+    body('name')
+        .trim()
+        .isLength({min: 4})
+        .withMessage('not a valid name')
 ]
 , controller.signup);
 
