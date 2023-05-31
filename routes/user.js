@@ -18,7 +18,7 @@ router.post('/signup',
                     }
                 })
         })
-        .normalizeEmail(),
+        .notEmpty(),
     body('password')
         .trim()
         .isLength({ min: 8 })
@@ -34,12 +34,33 @@ router.post('/signup',
                 return Promise.reject('password is not match!');
             }
             return true;
-        }),
+        })
+        .notEmpty(),
     body('name')
         .trim()
         .isLength({min: 4})
+        .isAlpha()
         .withMessage('not a valid name')
+        .notEmpty()
 ]
 , controller.signup);
+
+
+router.get('/signin',
+[
+    body('email')
+        .trim()
+        .isEmail()
+        .withMessage('email format is not correct!')
+        .not()
+        .isEmpty(),
+    body('password')
+        .trim()
+        .isLength({min: 8})
+        .not()
+        .isEmpty()
+        .withMessage('password is not correct!')
+]
+, controller.signin);
 
 module.exports = router;

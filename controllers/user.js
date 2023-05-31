@@ -25,10 +25,6 @@ exports.signup = async (req, res, next) => {
         });
 
         const new_user = await user.save();
-        if (!new_user) {
-            const err = new Error('new user cannot sign up!');
-            throw err;
-        }
 
         res.status(201).json({
             message: 'successfully signup!',
@@ -40,4 +36,40 @@ exports.signup = async (req, res, next) => {
             message: err.message[0].msg
         });
     }
+}
+
+exports.signin = async (req, res, next) => {
+    try {
+        const error = validationResult(req);
+        if (!error.isEmpty()) {
+            const err = new Error('validation failed!');
+            err.statusCode = 422;
+            throw err;
+        }
+
+        const email = req.body.email;
+        const password = req.body.password;
+
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            const err = new Error('email not found!');
+            err.statusCode = 401;
+            throw err;
+        }
+
+        const isMatch = await bcrypt.compare(password, user.hashedPw);
+        if (!isMatch) {
+            const err = new Error('Password is wrong!');
+            err.statusCode = 401;
+            throw err;
+        }
+
+        console.log('sign in success');
+        res.status(200).json(user);
+    } catch(err) {
+        res.status(err.statusCode).json({
+            message: err.message[0].msg
+        });
+    }
+    
 }
