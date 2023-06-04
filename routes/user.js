@@ -2,6 +2,8 @@ const express = require('express');
 const {body} = require('express-validator');
 const User = require('../models/user');
 const controller = require('../controllers/user');
+const isAuth = require('../middlewares/isAuth');
+const isAdmin = require('../middlewares/isAdmin');
 const router = express.Router();
 
 router.post('/signup',
@@ -62,5 +64,9 @@ router.get('/signin',
         .withMessage('password is not correct!')
 ]
 , controller.signin);
+
+router.get('/profile', isAuth, controller.profile);
+
+router.get('/admin', isAuth, isAdmin, controller.admin);
 
 module.exports = router;

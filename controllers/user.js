@@ -73,3 +73,27 @@ exports.signin = async (req, res, next) => {
         next(err);
     }
 }
+
+exports.profile = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userAuth);
+        res.status(200).json({
+            message: 'profile view success!',
+            user: user
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.admin = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userAuth);
+        res.status(200).json({
+            message: 'welcome from admin dashboard!',
+            user: user
+        });
+    } catch (err) {
+        next(err);
+    }
+}
