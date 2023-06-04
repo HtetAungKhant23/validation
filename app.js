@@ -14,6 +14,14 @@ app.use((req, res, next) => {
 
 app.use('/user', userRouter);
 
+app.use((error, req, res, next) => {
+    const message = error.message;
+    const status = error.statusCode || 500;
+    res.status(status).json({
+        message: message
+    });
+});
+
 const run = async () => {
     try {
         const connect = await dbConnect();
